@@ -30,12 +30,41 @@ if (process.env.NODE_ENV !== "development") {
 app.use(session(sessionOptions));
 
 
+
+const allowedOrigins = ["http://localhost:5173"];
+
+const isNetlifyDomain = (origin) => {
+  if (!origin) return false;
+  try {
+    const url = new URL(origin);
+    return url.hostname.endsWith(".netlify.app");
+  } catch {
+    return false;
+  }
+};
+
 app.use(
   cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || isNetlifyDomain(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-    origin: process.env.NETLIFY_URL || "http://localhost:5174",  
   })
 );
+
+
+
+
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: process.env.NETLIFY_URL || "http://localhost:5173",  
+//   })
+// );
 
 
 app.use(express.json()); 
