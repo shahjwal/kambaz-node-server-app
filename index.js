@@ -19,16 +19,34 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: false,
 };
+
 if (process.env.NODE_ENV !== "development") {
   app.set("trust proxy", 1);
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
-    sameSite: "none",
-    secure: true,
+    sameSite: "none",  // Allow cross-origin cookies
+    secure: true,      // Ensure the cookie is only sent over HTTPS
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
 app.use(session(sessionOptions));
+
+
+// const sessionOptions = {
+//   secret: process.env.SESSION_SECRET || "kambaz",
+//   resave: false,
+//   saveUninitialized: false,
+// };
+// if (process.env.NODE_ENV !== "development") {
+//   app.set("trust proxy", 1);
+//   sessionOptions.proxy = true;
+//   sessionOptions.cookie = {
+//     sameSite: "none",
+//     secure: true,
+//     domain: process.env.NODE_SERVER_DOMAIN,
+//   };
+// }
+// app.use(session(sessionOptions));
 
 
 
